@@ -47,17 +47,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    working-directory: ./example-app
+    shell: bash
+
 jobs:
   build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-
-    defaults:
-      run:
-        working-directory: ./example-app
-        shell: bash
 
     steps:
       - uses: actions/checkout@v4
@@ -76,17 +76,27 @@ jobs:
           path: /home/runner/work/iac-labs/iac-labs/example-app/.venv
           key: ${{ runner.os }}-venv
 
+
+
+
+
+
+
   lint:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: build
     defaults:
       run:
         working-directory: ./example-app
         shell: bash
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - name: Install Poetry Action
+        uses: snok/install-poetry@v1.3.4
       - name: Cache build venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
@@ -96,17 +106,31 @@ jobs:
       - name: lint
         run: poetry run task lint
 
+
+
+
+
+
+
+
+
+
+
   formatter:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: build
     defaults:
       run:
         working-directory: ./example-app
         shell: bash
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - name: Install Poetry Action
+        uses: snok/install-poetry@v1.3.4
       - name: Cache build venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
@@ -116,17 +140,30 @@ jobs:
       - name: formatter
         run: poetry run task formatter
 
+
+
+
+
+
+
+
+
+
   security:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: build
     defaults:
       run:
         working-directory: ./example-app
         shell: bash
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - name: Install Poetry Action
+        uses: snok/install-poetry@v1.3.4
       - name: Cache build venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
@@ -136,17 +173,31 @@ jobs:
       - name: security
         run: poetry run task security
 
+
+
+
+
+
+
+
+
+
+
   unittests:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [lint, formatter, security]
     defaults:
       run:
         working-directory: ./example-app
         shell: bash
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - name: Install Poetry Action
+        uses: snok/install-poetry@v1.3.4
       - name: Cache build venv
         id: cached-poetry-dependencies
         uses: actions/cache@v3
